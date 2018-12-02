@@ -18,3 +18,39 @@ html --- <html><head>...</head><body>...</body></html>
   bsObj.html.body.h1
   bsObj.body.h1
   bsObj.html.h1
+
+# find error //12.02
+from urllib.request import urlopen
+from urllib.error import HTTPError, URLError
+from bs4 import BeautifulSoup
+def getTitle(url):
+    try:
+        html = urlopen(url)
+    except (HTTPError, URLError) as e:
+        return None
+    try:
+        bsObj = BeautifulSoup(html.read())
+        title = bsObj.body.h1
+    except AttributeError as e:
+        return None
+    return title
+
+title = getTitle("http://www.pythonscraping.com/pages/page1.html1")
+if title == None:
+    print("Title could not be fouund")
+else:
+    print(title)
+
+# Gordian Kont 
+
+    
+    
+    
+    
+    
+    
+    
+
+
+-----end-----
+    
