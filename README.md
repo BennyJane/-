@@ -19,7 +19,11 @@ html --- <html><head>...</head><body>...</body></html>
   bsObj.body.h1
   bsObj.html.h1
 
-# find error //12.02
+# find error //12.02 1.2.3 可靠的网络链接
+# html = urlopen("http://www.pythonscraping.com/pages/page1.html")
+#可能出现的两种错误及处理方式
+
+
 from urllib.request import urlopen
 from urllib.error import HTTPError, URLError
 from bs4 import BeautifulSoup
