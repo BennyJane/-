@@ -1,0 +1,54 @@
+#web crawler
+#3.1 遍历单个域名
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+
+html = urlopen("html://en.wikipedia.org/wiki/Kevin_Bacon")
+bsObj = BeautifulSoup(html)
+for link in bsObj.finAll("a"):
+# "a" 标签 属于HTML的相关知识扩充
+    if 'href' in link.attrs:
+        print(link.attrs['href'])
+#获得维基百科单个页面所有词条链接
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+import re
+
+html = urlopen("http://en.wikipedia.org/wiki/Kevin_Bacon")
+bsObj = BeautifulSoup(html)
+#正则表达式：根据页面代码特征写出来
+for link in bsObj.find("div", {"id":"bodyContent"}).findAll("a", href =re.compile("^(/wiki/)((?!:).)*$")):
+    if 'href' in link.attrs:
+        print(link.attrs['href'])
+
+#从一个链接跳转到另一个链接
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+import datetime
+import random
+import re
+
+random.seed(datetime.datetime.now())
+def getlinks(articlUrl):
+    html = urlopen("http://en.wikipedia.org" + articlUrl)
+    bsObj = BeautifulSoup(html)
+    return bsObj.find("div", {"id":"bodyContent"}).findAll("a", href =re.compile("^(/wiki/)((?!:).)*$"))
+
+links=getlinks("/wiki/Kevin_Bacon")
+while len(links) > 0:
+    newArticle = links[random.randint(0,len(links)-1)].attrs["href"]
+    # links[random.randint(0, len(links)-1)]
+    print(newArticle)
+    links = getlinks(newArticle)
+
+### 参考第一章，异常处理。
+
+
+
+
+
+
+
+
+
+----end
