@@ -1,0 +1,84 @@
+# deep web 深网// dark Web == hidden Web
+#surface Web 浅网，互联网上搜索引擎可以抓到的那部分网络
+
+
+#采集整个网站
+from
+
+
+pages = set()
+def getLinks(pageUrl):
+    global pages
+    html = urlopen("http://en.wikipedia.org"+pageUrl)
+    bsObj = BeautifulSoup(html)
+    for link in bsObj.findAll("a", href=re.compile("^(/wiki/)")):
+        if 'href' in link.attrs:
+        #??没懂,没理解
+            if link.attrs['href'] not in pages:
+                #遇到新的页面
+                newPages = link.attrs['href']
+                print(newPage)
+                pages.add(newPage)
+                getlinks(newPage)
+getLinks("")
+
+#收集整个网站数据
+--snip--
+pages = set()
+def getlinks(pageUrl):
+    global pages
+    html = urlopen("http://en.wikipedia.org"+pageUrl)
+    bsObj = BeautifulSoup(html)
+    try:
+        print(bsObj.h1.get_text())
+        print(bsObj.find(id="mw-content-text").finAll("p")[0])
+        ##不懂。。。。。。。。。。。。。。
+        print(baObj.fin(id="ca-edit").find("span").find("a").attrs['href'])
+        ##不懂。。。。。。。。。。。。。。
+     except AttributeError:
+        print("页面缺少一些属性！不过不用担心！")
+        
+    for link in bsObj.findAll("a", href=re.compile("^(/wiki/)")):
+        if 'href' in link.attrs:
+        #??没懂,没理解
+            if link.attrs['href'] not in pages:
+                #遇到新的页面
+                newPages = link.attrs['href']
+                print("-------------\n"+newPage)
+                pages.add(newPage)
+                getlinks(newPage)
+getLinks("")
+
+
+#pycharm 中可以跑的程序
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+import re
+
+pages = set()
+def getlinks(pageUrl):
+    global pages
+    html = urlopen("http://en.wikipedia.org" + pageUrl)
+    bsObj = BeautifulSoup(html)
+    try:
+        print(bsObj.h1.get_text())
+        print(bsObj.find(id="mw-content-text").findAll("p")[0])
+        ##不懂。。。。。。。。。。。。。。
+        print(bsObj.find(id="ca-edit").find("span").find("a").attrs['href'])
+        ##不懂。。。。。。。。。。。。。。
+    except AttributeError:
+        print("页面缺少一些属性！不过不用担心！")
+
+    for link in bsObj.findAll("a", href=re.compile("^(/wiki/)")):
+        if 'href' in link.attrs:
+            # ??没懂,没理解
+            if link.attrs['href'] not in pages:
+                # 遇到新的页面
+                newPages = link.attrs['href']
+                print("-------------\n" + newPages)
+                pages.add(newPages)
+                getlinks(newPages)
+getlinks("")
+
+
+----end
