@@ -1,0 +1,61 @@
+from urllib.request import urlopen
+from urllib.parse import urlparse
+from bs4 import BeautifulSoup
+import re
+import datetime
+import random
+
+pages = set()
+random.seed(datetime.datetime.now())
+
+#获取页面所有内链的列表
+def getInternallinks(bsObj, includeUrl):
+    includeUrl = urlparse(includeUrl).scheme+"://"+urlparse(includeUrl).netloc
+    #不懂
+    internaliLinks =[]
+    #找出所有以“/”开头的链接
+    for link in bsObj.findAll("a", href=re.complie("^(/|.*"+includeUrl+")")):
+        if link.attrs['href'] is not None:
+            if link.attrs['href'] not in internaliLinks:
+                    if(link.attrs['href'.startswith("/")]):
+                        internaliLinks.append(includeUrl+link.attrs['href'])
+                    else:
+                        internaliLinks.append(link.attrs['href'])
+    return internaliLinks
+
+#获得页面所有外链的列表
+def getExternalLinks(bsObj, excludeUrl):
+    externalLinks = []
+    #找到所有以“http” 或者 “www”开头且不包含当前URL的链接
+    for link in bsObj.findAll("a",
+                              href=re.compile("^(http|www)((?!"+excludeUrl+").)*$")):
+        if link.attrs['href'] is not None:
+            if link.attrs['href'] not in externalLinks:
+                externalLinks.append(link.attrs['href'])
+    return externalLinks
+
+def splitAddress(address):
+    addressParts = address.replace("http://", "").split("/")
+    #??? don't know!
+    return addressParts
+
+def getRandomExternalLink(startingPage):
+    html = urlopen(startingPage)
+    bsObj = BeautifulSoup(html)
+    externalLinks = getExternalLinks(bsObj, urlparse(startingPage).netloc)
+    #
+    if len(externalLinks) == 0:
+        print("No external links, looking around the site for one")
+        domain = urlparse(startingPage).scheme+"://"+urlparse(startingPage).netloc
+        internalLinks = getInternallinks(bsObj, domain)
+        return getRandomExternalLink(internalLinks[random.randint(0,
+                                       len(internalLinks)-1)])
+    else:
+        return externalLinks[random.randint(0, len(externalLinks)-1)]
+
+def followExternalOnly(startingSite):
+    externalLink = getRandomExternalLink(startingSite)
+    print("Random external link is:"+externalLink)
+    followExternalOnly(externalLink)
+
+followExternalOnly("http://oreilly.com")
