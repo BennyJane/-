@@ -26,7 +26,12 @@ http://socialmediasite.com/users/1234/post?format=json&from=08012014&to=08312014
 #假如我想获取 Monty Python 喜剧乐团的歌曲，可以用下面的 链接获取歌曲的 ID（记得把 < 你的 api_key> 替换成你自己的 API key）
 http://developer.echonest.com/api/v4/artist/search?api_key=<your api_key>&name=monty%20python
 
+http://developer.echonest.com/api/v4/artist/songs?api_key=<你的api_key>&id= AR5HF791187B9ABAF4&format=json&start=0&results=10
 
+http://developer.echonest.com/api/v4/artist/songs?api_key=<你的api_key>2&name= monty%20python&format=json&start=0&results=10
+
+#用同样的ID号，我也可以请求与Monty Python风格相似的艺术家：
+http://developer.echonest.com/api/v4/artist/similar?api_key=<你的api_key>&id= AR5HF791187B9ABAF4&format=json&results=10&start=0
 
 
 
