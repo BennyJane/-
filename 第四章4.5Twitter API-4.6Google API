@@ -1,0 +1,98 @@
+#Twitter 的验证系统用 OAuth 验证，非常复杂；
+#最好找一个成熟稳定的 Python 库来处理它， 不要自己从头写代码来实现。
+#因为手工处理 Twitter 的 API 是非常复杂的工作，
+#所以本节 内容的重点是用 Python 代码来实现 API 的交互，不是亲手实现这个 API。
+# Python Twitter ： pip install twitter
+
+#搜索某个推文
+#下面的代码连接 Twitter API， 然后打印一个包含 #python 标签的推文 JSON 列表。
+#记得用的时候把对应的信息替换成你的 OAuth 验证信息
+from twitter import Twitter
+t = Twitter（auth=OAuth（<Acccess Token>,<Accedd Token Secret>,
+                         <Consumer Key>,<Consumer Secret>））
+pythonTweets = t.serch.tweets(q = "#python")
+print(pythonTweets)
+
+#对于获取一组推文的请求，你可以通过设置推文数量来限制条数：
+pythonStatuses = t.statuses.user_timeline(screen_name="montypython", count=5) 
+print(pythonStatuses)
+#这个例子中，我们请求 @montypython 推文中（也包括转发的推文）按时间排序最靠前的 5 条推文。
+--------------
+#可以通过 API 发一篇推文
+from twitter import*
+t = Twitter(auth=OAuth（<Acccess Token>,<Accedd Token Secret>,
+                         <Consumer Key>,<Consumer Secret>）)
+statusUpdate = t.statuses.update(status='Hello, world!')
+print(statusUpdate)
+
+---------------------------------------------------------------
+
+#4.6 GOOGLE API
+#用 Google 的 Geocode（地理位置信息）API 
+#你可以在浏览器里实现一个简单的 GET 请求， 
+#把街道地址（这里用的是 Boston Museum of Science， 里面有 Science Park）解析成纬度和经度：
+https://maps.googleapis.com/maps/api/geocode/json?address=1+Science+Park+Boston+MA+
+                                02114&key=<你的API key>
+
+#可以用 Time zone（时区）API 获取任意经纬度的时区信息：
+https://maps.googleapis.com/maps/api/timezone/json?location=42.3677994,-71.0708078
+                                &timestamp=1412649030&key=<你的 API key>
+#Time zone API需要用一个Unix时间戳才能发出请求。它可以让Google为你提供一个经过时区调整的夏令时。
+#即使在那些时区不受夏令时影响的地区（比如凤凰城不实行夏令时 7 ）， API 请求也是需要时间戳的。
+
+#用地点经纬度获取对应的海拔高度：
+https://maps.googleapis.com/maps/api/elevation/json?
+                            locations=42.3677994,-71.070 8078&key=<你的 API key>
+                            
+#返回的结果是该地点海平面以上的海拔高度（单位是米），
+#其中一个参数“resolution”（分辨率）的数值表示__对这个点进行插值计算的海拔高度的样本数据中与这个点最远的距离单位是米）。
+#这个值越小，表示计算出的海拔高度的值越精确。
+{ "results" : [ { "elevation" : 5.127755641937256, 
+  "location" : { "la t" : 42.3677994, "lng" : -71.0708078 }, 
+  "resolution" : 9.543951988220 215 } ], 
+  "status" : "OK" }
+
+---------------------------------------------------------------
+
+#4.7 解析JSON数据
+#用 freegeoip.net 可以把 IP 地址解析转换成地 理位置：http://freegeoip.net/json/50.78.253.58
+#可以获取这个请求的反馈数据，然后用Python-JSON解析函数来解码：
+
+import json 
+from urllib.request import urlopen
+
+def getCountry(ipAddress):
+response = urlopen("http://freegeoip.net/json/"+ipAddress).read() 
+                           .decode('utf-8')
+                           ##？？
+  responseJson = json.loads(response)
+  #？？
+  return responseJson.get("country_code")
+  
+print(getCountry("50.78.253.58"))
+
+#这段代码可以打印出 IP 地址为 50.78.253.58 的国家代码。
+
+import json
+
+jsonString = '{"arrayOfNums":[{"number":0},{"number":1},{"number":2}], 
+               "arrayOfFruits":[{"fruit":"apple"},{"fruit":"banana"}, 
+                                {"fruit":"pear"}]}' 
+jsonObj = json.loads(jsonString)
+
+print(jsonObj.get(" arrayOfNums")) 
+print(jsonObj.get(" arrayOfNums")[1]) 
+print(jsonObj.get(" arrayOfNums")[1].get("number")+ 
+      jsonObj.get("arrayOfNums")[2].get("number")) 
+print(jsonObj.get(" arrayOfFruits")[2].get("fruit"))
+
+>>>>
+[{'number':0, {'number':1},{'number':2}}]
+{'number':1}
+3
+pear
+
+
+—--end
+
+                         
