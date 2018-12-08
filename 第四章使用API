@@ -1,0 +1,38 @@
+#Application Programming Interface ==API；.jsom or .xml
+
+http://freegeoip.net/json/50.78.253.58
+#
+get
+post
+put
+delete 
+
+#通常 API 验证的方法都是用类似令牌（token）的方式调用.
+http://developer.echonest.com/api/v4/artist/songs?api_key=<your api_key>
+    %20&name=guns%20n%27%20roses&format=json&start=0&results=100
+
+#令牌除了在 URL 链接中传递，还会通过请求头里的 cookie 把用户信息传递给服务器。
+token = "<your api key>"
+webRequest = urllib.request.Request("http://myapi.com", headers={"token":token})
+html = urlopen(webRequest)
+
+#API调用
+http://socialmedias.com/users/1234/posts?from=080120148&to=08012014
+
+http://socialmedias.com/api/v4/json/users/1234/posts?from=08012014&to=08312014
+
+http://socialmediasite.com/users/1234/post?format=json&from=08012014&to=08312014
+
+#假如我想获取 Monty Python 喜剧乐团的歌曲，可以用下面的 链接获取歌曲的 ID（记得把 < 你的 api_key> 替换成你自己的 API key）
+http://developer.echonest.com/api/v4/artist/search?api_key=<your api_key>&name=monty%20python
+
+
+
+
+
+
+
+
+
+
+----end
