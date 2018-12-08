@@ -1,3 +1,5 @@
+#Scrapy
+
 # 在当前目录下创建新的scrapy项目
 $scrapy startproject wikiSpider
     #wikiSpider文件夹的目录结构
