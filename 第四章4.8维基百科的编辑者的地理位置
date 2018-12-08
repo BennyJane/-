@@ -1,0 +1,99 @@
+from urllib.request import urlopen 
+from bs4 import BeautifulSoup 
+import datetime 
+import random 
+import re
+
+random.seed(datetime.datetime.now()) 
+def getLinks(articleUrl):
+    html = urlopen("http://en.wikipedia.org"+articleUrl) 
+    bsObj = BeautifulSoup(html) 
+    return bsObj.find("div", {"id":"bodyContent"}).findAll("a",
+                               href=re.compile("^(/wiki/)((?!:).)*$"))
+
+def getHistoryIPs(pageUrl):
+    # 编辑历史页面URL链接格式是： 
+    # http://en.wikipedia.org/w/index.php?title=Title_in_URL&action=history 
+    pageUrl = pageUrl.replace("/wiki/", "") 
+    historyUrl = "http://en.wikipedia.org/w/index.php?title=" 
+        +pageUrl+"&action=history" 
+    print(" history url is: "+historyUrl) 
+    html = urlopen(historyUrl) 
+    bsObj = BeautifulSoup(html) 
+    # 找出class属性是"mw-userlink mw-anonuserlink"的链接 
+    # 它们用IP地址代替用户名 
+    ipAddresses = bsObj.findAll("a", {"class":"mw-userlink mw-anonuserlink"}) 
+    addressList = set() 
+    for ipAddress in ipAddresses:
+        addressList.add(ipAddress.get_text()) 
+    return addressList
+
+links = getLinks("/wiki/Python_(programming_language)")
+
+while(len(links) > 0):
+    for link in links:
+        print(" -------------------") 
+        historyIPs = getHistoryIPs(link.attrs["href"]) 
+        for historyIP in historyIPs:
+            print(historyIP)
+    
+    newLink = links[random.randint(0, len(links)-1)].attrs["href"] 
+    links = getLinks(newLink)
+    
+#获得了编辑历史的 IP 地址数据，把它们与上一节的 getCountry 函数结合起来， 就可以查询 IP 地址所属的国家和地区了。
+#对 getCountry 函数做了一点儿修改，处理了 无效或错误的 IP 地址引起的“404 Not Found”异常
+#（比如， 写到这里时， freegeoip.net 不 能查询 IPv6 地址，可能会引起 404 错误）：
+def getCountry(ipAddress):
+    try:
+        response = urlopen("http://freegeoip.net/json/" 
+                            +ipAddress).read().decode('utf-8') 
+        except HTTPError:
+            return None 
+        responseJson = json.loads(response) 
+        return responseJson.get("country_code")
+
+links = getLinks("/wiki/Python_(programming_language)")
+
+while(len(links) > 0):
+    for link in links:
+        print(" -------------------") 
+        historyIPs = getHistoryIPs(link.attrs["href"]) 
+        for historyIP in historyIPs:
+            country = getCountry(historyIP) 
+            if country is not None:
+                print(historyIP+" is from "+country)
+                
+newLink = links[random.randint(0, len(links)-1)].attrs["href"] 
+links = getLinks(newLink)
+
+>>>> outcomes
+------------------
+history url is: http://en.wikipedia.org/w/index.php?title=Programming_ paradigm&action=history
+
+68.183.108.13 is from US
+
+86.155.0.186 is from GB
+
+188.55.200.254 is from SA
+
+108.221.18.208 is from US
+
+141.117.232.168 is from CA
+
+76.105.209.39 is from US
+
+182.184.123.106 is from PK
+
+212.219.47.52 is from GB
+
+72.27.184.57 is from JM
+
+49.147.183.43 is from PH
+
+209.197.41.132 is from US
+
+174.66.150.151 is from US
+...
+
+--------end
+    
