@@ -1,0 +1,20 @@
+#phpMyAdmin or MySQL Workbench
+SLECT * FOEM users WHERE firstname = "Ryan"
+
+>CREATE DATEBASE scraping;
+
+>USE scraping;
+
+>CREATE TABLE pages (id BIGINT(7) NOT NULL AUTO_INCREMENT,
+                     title VARCHAR(200),
+                     content VARCHAR(10000),
+                     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                     PRIMARY KEY(id));
+# 名称（ id 、 title 、 created 等）
+# 数据类型（ BIGINT(7) 、 VARCHAR 、 TIMESTAMP ）== bigint varchar timestamp
+# 其他可选属性（ NOT NULL AUTO_INCREMENT ） == not null auto_increment 
+
+>DESCRIBE pages;
+
+>INSERT INTO pages (title)
+                     
