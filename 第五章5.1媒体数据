@@ -1,0 +1,70 @@
+from urllib.request import urlretrieve
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+
+html = urlopen("http://www.pythonscraping.com")
+bsObj = BeautifulSoup(html)
+imageLocation = bsObj.find("a",{"id":"logo"}).find("img")["src"]
+urlretrieve (imageLocation, "logo.jpg")
+
+#从 http://pythonscraping.com 下载 logo 图片， 然后在程序运行的文件夹里保存为 logo.jpg 文件
+
+#如果你只需要下载一个文件， 而且知道如何获取它， 以及它的文件类型， 这么做就可以 了。
+#但是大多数爬虫都不可能一天只下载一个文件。
+#下面的程序会把 http://pythonscraping. com 主页上所有 src 属性的文件都下载下来：
+
+import os 
+from urllib.request import urlretrieve
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+
+downloadDirectory = "downloaded" #??
+baseurl = "http://pythonscraping.com"
+
+def getAbsoluteURL(baseUrl, source):
+    if source.startswith("http://www."):
+        url = "http://"+source[11:]
+    elif source.startswith("http://"):
+        url = source
+    elif source.startswith("www."):
+        url = "http://"+source[4:]
+    else:
+        url = baseUrl+"/"+source
+    ##???
+    if baseUrl not in url:
+        return None
+    return url 
+
+def getDownloadPath（baseUrl， absoluteUrl，downloadDirectory）：
+    path = absoluteUrl.replace("www.","")
+    path = path.replace(baseUrl,"")
+    path = downloadDirectory+path
+    directory = os.path.dirname(path)
+    
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        
+    return path
+
+#usefully working
+html = urlopen("http://www.pythonscraping.com")
+bsObj = BeautifulSoup(html)
+downloadList = bsObj.findAll(src=True)
+
+for download in downloadList:
+    fileUrl = getAbsoluteURL(baseUrl, download["src"])
+    #cite the previous text
+    if fileUrl is not None:
+        print(fileUrl)
+        urlretrieve(fileUrl, getDownloadPath(baseUrl,fileUrl,downloadDirectory))
+    
+    
+#这个程序首先使用 Lambda 函数（第 2 章介绍过）选择首页上所有带 src 属性的标签。
+#然后对 URL 链接进行清理和标准化，获得文件的绝对路径（而且去掉了外链）。
+#最后，每个文件都会下载到程序所在文件夹的 downloaded 文件里。
+#这里 Python 的 os 模块用来获取每个下载文件的目标文件夹，建立完整的路径。 
+#os 模块是 Python 与操作系统进行交互的接口，它可以操作文件路径，创建目录，获取运行进程和环境变量的信息，以及其他系统相关的操作。
+
+
+
+--------end
