@@ -1,0 +1,46 @@
+#CSV（Comma-Separated Values， 逗号分隔值）是存储表格数据的常用文件格式。
+#Microsoft Excel 和很多应用都支持 CSV 格式，因为它很简洁。
+
+import csv 
+
+csvFile = open（"../files/text.csv", 'w+'）
+try:
+    writer = csv.writer(csvFile)
+    writer.writerow(('number','number plus 2','number times 2'))
+    for i in range(10):
+        writer.writerow((i,i+2,i*2))
+finally:
+    csvFile.close()
+
+#Python 新建文件的机制考虑得非常周到（bullet-proof）:
+#如果 ../ﬁles/test.csv 不存在, Python 会自动创建文件（不会自动创建文件夹）。
+#如果文件已经存在， Python 会 用新的数据覆盖 test.csv 文件。
+
+#------------------
+import csv
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+
+html = urlopen("http://en.wikipedia.org/wiki/Comparison_of_text_editors")
+bsObj = BeautifulSoup(html)
+#主对比表格是当前页面上的第一个表格
+table = bsObj.findAll("table",{"class":"wikitable"})[0]
+rows = table.findAll("tr")
+
+csvFile = open("../files/editors.csv",'w+',newline='',encoding='utf-8')
+writer = csv.writer(csvFile)
+try:
+    for row in rows:
+        csvRow = []
+        for cell in row.findAll(['td','th']):
+            csvRow.append(cell.get_text())
+        writer.writerow(csvRow)
+finally:
+    csvFile.close()
+#网络数据采集的一个常用功能就是获取 HTML 表格并写入 CSV 文件。
+#维基百科的文本编辑器对比词条（https://en.wikipedia.org/wiki/Comparison_of_text_editors）中
+#用了许多复杂 的 HTML 表格， 用到了颜色、链接、排序,以及其他在写入 CSV 文件之前需要忽略的 HTML 元素。
+#用 BeautifulSoup 和 get_text() 函数，你可以用十几行代码完成这件事：
+
+
+    
