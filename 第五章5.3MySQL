@@ -14,7 +14,30 @@ SLECT * FOEM users WHERE firstname = "Ryan"
 # 数据类型（ BIGINT(7) 、 VARCHAR 、 TIMESTAMP ）== bigint varchar timestamp
 # 其他可选属性（ NOT NULL AUTO_INCREMENT ） == not null auto_increment 
 
+#查看数据表的结构
 >DESCRIBE pages;
 
->INSERT INTO pages (title)
+#插入测试数据：只需要插入两个字段（title与content）的数据即可，id字段是自动递增的；
+#created字段的类型是timestamp，默认是数据加入时的时间戳。
+>INSERT INTO pages (title，content,)  VALUES ("Test page title",
+                    "This is some test page content. It can be up tp 10,000 characters long.");
+#定义四个字段的内容：
+INSERT INTO pages (id, title, content, created) VALUES (3,"Test page title", 
+            "This is some test page content. It can be up tp 10,000 characters long.", "2018-12-10 23:08:35")
+#选择数据:将id字段中等于2的整行数据全挑出来。 * 通配符，表示所有字段。
+SELECT * FROM pages WHERE id=2; #把满足（WHERE id = 2）的所有字段都显示出来，如果没有，返回一个空值）
+
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+               
                      
